@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const drawButton = document.getElementById('drawButton');
     const copyHistoryButton = document.getElementById('copyHistoryButton');
     const toggleModeButton = document.getElementById('toggleModeButton');
+    const popup = document.getElementById('popup');
+    const popupContent = document.getElementById('popupContent');
+    const closePopup = document.getElementById('closePopup');
 
     let wordsList = [];
     let drawnWords = [];
@@ -17,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     drawButton.addEventListener('click', drawRandomWords);
     copyHistoryButton.addEventListener('click', copyHistoryToClipboard);
     toggleModeButton.addEventListener('click', toggleDarkMode);
+    closePopup.addEventListener('click', () => popup.style.display = 'none');
 
     function drawRandomWords() {
         const input = wordInput.value.trim();
@@ -50,6 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
         drawnWords.forEach(word => {
             const li = document.createElement('li');
             li.textContent = word;
+            const searchButton = document.createElement('button');
+            searchButton.textContent = '🔍';
+            searchButton.addEventListener('click', () => showPopup(word));
             const deleteButton = document.createElement('button');
             deleteButton.textContent = '❌';
             deleteButton.addEventListener('click', () => {
@@ -57,9 +64,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateDrawnWords();
                 updateWordCount();
             });
+            li.appendChild(searchButton);
             li.appendChild(deleteButton);
             drawnWordsList.appendChild(li);
         });
+    }
+
+    function showPopup(word) {
+        fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+            .then(response => response.json())
+            .then(data => {
+                const meaning = data[0]?.meanings[0]?.definitions[0]?.definition || 'Meaning not found';
+                popupContent.textContent = `Meaning of ${word}: ${meaning}`;
+                popup.style.display = 'block';
+            })
+            .catch(() => {
+                popupContent.textContent = 'Error fetching meaning.';
+                popup.style.display = 'block';
+            });
     }
 
     function saveToHistory(words) {
