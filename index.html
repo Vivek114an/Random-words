@@ -11,12 +11,11 @@
     <div class="container">
         <textarea id="wordInput" placeholder="Paste your words here (one per line)"></textarea>
         <button id="drawButton">Draw Words</button>
-        <button id="toggleModeButton">Toggle Dark Mode</button>
-        
+        <p id="wordCount">Word Count: 0</p>
+
         <div class="section">
             <h3>Drawn Words</h3>
             <ul id="drawnWords"></ul>
-            <p id="wordCount">Word Count: 0</p>
         </div>
 
         <div class="section">
@@ -25,6 +24,13 @@
             <p id="historyWordCount">History Word Count: 0</p>
             <button id="copyHistoryButton">Copy All to Clipboard</button>
         </div>
+    </div>
+
+    <button id="toggleModeButton" class="toggle-button">🌙</button>
+
+    <div id="popup" class="popup">
+        <span id="popupContent"></span>
+        <button id="closePopup">❌</button>
     </div>
 
     <script src="script.js"></script>
