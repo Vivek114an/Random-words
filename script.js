@@ -1,75 +1,99 @@
 
-document.getElementById('wordInput').addEventListener('input', updateWordCount);
+document.addEventListener('DOMContentLoaded', () => {
+    const wordInput = document.getElementById('wordInput');
+    const drawnWordsList = document.getElementById('drawnWords');
+    const historyWordsList = document.getElementById('historyWords');
+    const wordCountText = document.getElementById('wordCount');
+    const historyWordCountText = document.getElementById('historyWordCount');
+    const drawButton = document.getElementById('drawButton');
+    const copyHistoryButton = document.getElementById('copyHistoryButton');
+    const toggleModeButton = document.getElementById('toggleModeButton');
 
-function updateWordCount() {
-    const input = document.getElementById('wordInput').value.trim();
-    const words = input.split(/\s+/).filter(word => word.length > 0);
-    document.getElementById('wordCount').innerText = `Word Count: ${words.length}`;
-}
-
-function drawRandomWords() {
-    const input = document.getElementById('wordInput').value.trim();
-    let words = input.split(/\s+/).filter(word => word.length > 0);
-
-    if (words.length === 0) {
-        alert('Please enter some words first.');
-        return;
-    }
-
-    const drawCount = parseInt(document.getElementById('drawCount').value, 10);
-    if (drawCount > words.length) {
-        alert('Not enough words to draw.');
-        return;
-    }
-
+    let wordsList = [];
     let drawnWords = [];
-    for (let i = 0; i < drawCount; i++) {
-        const randomIndex = Math.floor(Math.random() * words.length);
-        drawnWords.push(words.splice(randomIndex, 1)[0]);
+    let historyWords = [];
+    let darkMode = false;
+
+    drawButton.addEventListener('click', drawRandomWords);
+    copyHistoryButton.addEventListener('click', copyHistoryToClipboard);
+    toggleModeButton.addEventListener('click', toggleDarkMode);
+
+    function drawRandomWords() {
+        const input = wordInput.value.trim();
+        if (input === '') {
+            alert('Please paste words into the input box.');
+            return;
+        }
+
+        wordsList = input.split('\n').map(word => word.trim()).filter(word => word.length > 0);
+
+        if (wordsList.length === 0) {
+            alert('No valid words to draw.');
+            return;
+        }
+
+        const numberOfWords = 3; // Change this number as needed
+        drawnWords = [];
+
+        for (let i = 0; i < numberOfWords && wordsList.length > 0; i++) {
+            const randomIndex = Math.floor(Math.random() * wordsList.length);
+            drawnWords.push(wordsList.splice(randomIndex, 1)[0]);
+        }
+
+        updateDrawnWords();
+        updateWordCount();
+        saveToHistory(drawnWords);
     }
 
-    displayDrawnWords(drawnWords);
-    document.getElementById('wordInput').value = words.join(' ');
-    updateWordCount();
-}
+    function updateDrawnWords() {
+        drawnWordsList.innerHTML = '';
+        drawnWords.forEach(word => {
+            const li = document.createElement('li');
+            li.textContent = word;
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = '❌';
+            deleteButton.addEventListener('click', () => {
+                drawnWords = drawnWords.filter(w => w !== word);
+                updateDrawnWords();
+                updateWordCount();
+            });
+            li.appendChild(deleteButton);
+            drawnWordsList.appendChild(li);
+        });
+    }
 
-function displayDrawnWords(drawnWords) {
-    const drawnWordsContainer = document.getElementById('drawnWords');
-    drawnWordsContainer.innerHTML = '';
+    function saveToHistory(words) {
+        historyWords = historyWords.concat(words);
+        updateHistoryWords();
+        updateHistoryWordCount();
+    }
 
-    drawnWords.forEach(word => {
-        const wordElement = document.createElement('div');
-        wordElement.innerHTML = `
-            ${word}
-            <button onclick="deleteDrawnWord(this)">Delete</button>
-            <button onclick="searchMeaning('${word}')">Search Meaning</button>
-        `;
-        drawnWordsContainer.appendChild(wordElement);
-    });
-}
+    function updateHistoryWords() {
+        historyWordsList.innerHTML = '';
+        historyWords.forEach(word => {
+            const li = document.createElement('li');
+            li.textContent = word;
+            historyWordsList.appendChild(li);
+        });
+    }
 
-function deleteDrawnWord(button) {
-    const wordElement = button.parentNode;
-    const drawnWordsContainer = document.getElementById('drawnWords');
-    drawnWordsContainer.removeChild(wordElement);
-}
+    function updateWordCount() {
+        wordCountText.textContent = `Word Count: ${wordsList.length}`;
+    }
 
-function saveToHistory() {
-    const drawnWordsContainer = document.getElementById('drawnWords');
-    const historyWordsContainer = document.getElementById('historyWords');
-    Array.from(drawnWordsContainer.children).forEach(wordElement => {
-        const historyElement = document.createElement('div');
-        historyElement.textContent = wordElement.firstChild.textContent;
-        historyWordsContainer.appendChild(historyElement);
-    });
-    drawnWordsContainer.innerHTML = ''; // Clear drawn words after saving to history
-}
+    function updateHistoryWordCount() {
+        historyWordCountText.textContent = `History Word Count: ${historyWords.length}`;
+    }
 
-function toggleMode() {
-    document.body.classList.toggle('dark-mode');
-}
+    function copyHistoryToClipboard() {
+        const historyText = historyWords.join('\n');
+        navigator.clipboard.writeText(historyText).then(() => {
+            alert('History copied to clipboard!');
+        });
+    }
 
-function searchMeaning(word) {
-    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(word)}+meaning`;
-    window.open(searchUrl, '_blank');
-}
+    function toggleDarkMode() {
+        darkMode = !darkMode;
+        document.body.classList.toggle('dark-mode', darkMode);
+    }
+});
