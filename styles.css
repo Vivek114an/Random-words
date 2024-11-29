@@ -1,68 +1,94 @@
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: #f5f5f5;
     color: #333;
     transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
-    max-width: 800px;
-    margin: auto;
-}
-
-.input-section, .controls, .drawn-words-section, .history-section {
-    margin-bottom: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 textarea {
     width: 100%;
     height: 150px;
     margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
 button {
-    padding: 8px 16px;
-    margin-right: 10px;
+    display: block;
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
+    background-color: #007BFF;
+    color: white;
+    font-size: 14px;
+    transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #ddd;
+    background-color: #0056b3;
 }
 
-#drawnWords, #historyWords {
-    border: 1px solid #ddd;
-    padding: 10px;
-    background-color: #fff;
+.section {
+    margin-top: 20px;
 }
 
-#drawnWords div, #historyWords div {
-    margin-bottom: 5px;
+h3 {
+    margin-bottom: 10px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    background-color: #f9f9f9;
+    padding: 8px;
+    margin-bottom: 4px;
+    border-radius: 4px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
-#drawnWords button, .history-section button {
+ul li button {
     margin-left: 5px;
+    font-size: 12px;
+}
+
+#copyHistoryButton {
+    background-color: #28a745;
+}
+
+#copyHistoryButton:hover {
+    background-color: #218838;
 }
 
 .dark-mode {
     background-color: #333;
-    color: #f9f9f9;
-}
-
-.dark-mode textarea, .dark-mode #drawnWords, .dark-mode #historyWords {
-    background-color: #444;
-    color: #f9f9f9;
+    color: #f5f5f5;
 }
 
 .dark-mode button {
     background-color: #555;
-    color: #f9f9f9;
+    color: #f5f5f5;
 }
 
 .dark-mode button:hover {
-    background-color: #666;
+    background-color: #777;
 }
