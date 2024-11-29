@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Word Selector</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Input Section -->
+        <div class="input-section">
+            <label for="wordInput">Enter Words (each on a new line):</label>
+            <textarea id="wordInput" placeholder="Paste your words here..."></textarea>
+            <p id="wordCount">Word Count: 0</p>
+        </div>
+
+        <!-- Controls Section -->
+        <div class="controls">
+            <label for="drawCount">Number of Words to Draw:</label>
+            <select id="drawCount">
+                <option value="1">1</option>
+                <option value="3">3</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+            </select>
+            <button onclick="drawRandomWords()">Draw Random Words</button>
+            <button onclick="saveToHistory()">Save to History</button>
+            <button onclick="toggleMode()">Toggle Dark/Light Mode</button>
+        </div>
+
+        <!-- Drawn Words Section -->
+        <div class="drawn-words-section">
+            <h3>Drawn Words</h3>
+            <div id="drawnWords"></div>
+        </div>
+
+        <!-- History Section -->
+        <div class="history-section">
+            <h3>History of Drawn Words</h3>
+            <div id="historyWords"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
