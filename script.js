@@ -1,9 +1,9 @@
-
 document.addEventListener('DOMContentLoaded', () => {
     const wordInput = document.getElementById('wordInput');
     const drawnWordsList = document.getElementById('drawnWords');
-    const historyWordsList = document.getElementById('historyWords');
+    const historyWordsTextArea = document.getElementById('historyWords');
     const wordCountText = document.getElementById('wordCount');
+    const drawnWordCountText = document.getElementById('drawnWordCount');
     const historyWordCountText = document.getElementById('historyWordCount');
     const drawButton = document.getElementById('drawButton');
     const copyHistoryButton = document.getElementById('copyHistoryButton');
@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateDrawnWords();
         updateWordCount();
-        saveToHistory(drawnWords);
     }
 
     function updateDrawnWords() {
@@ -56,7 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
             li.textContent = word;
             const searchButton = document.createElement('button');
             searchButton.textContent = '🔍';
-            searchButton.addEventListener('click', () => showPopup(word));
+            searchButton.addEventListener('click', () => {
+                window.open(`https://www.google.com/search?q=${word}`, '_blank');
+            });
             const deleteButton = document.createElement('button');
             deleteButton.textContent = '❌';
             deleteButton.addEventListener('click', () => {
@@ -68,20 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
             li.appendChild(deleteButton);
             drawnWordsList.appendChild(li);
         });
-    }
 
-    function showPopup(word) {
-        fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
-            .then(response => response.json())
-            .then(data => {
-                const meaning = data[0]?.meanings[0]?.definitions[0]?.definition || 'Meaning not found';
-                popupContent.textContent = `Meaning of ${word}: ${meaning}`;
-                popup.style.display = 'block';
-            })
-            .catch(() => {
-                popupContent.textContent = 'Error fetching meaning.';
-                popup.style.display = 'block';
-            });
+        drawnWordCountText.textContent = `Drawn Word Count: ${drawnWords.length}`;
     }
 
     function saveToHistory(words) {
@@ -91,31 +80,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateHistoryWords() {
-        historyWordsList.innerHTML = '';
-        historyWords.forEach(word => {
-            const li = document.createElement('li');
-            li.textContent = word;
-            historyWordsList.appendChild(li);
-        });
-    }
-
-    function updateWordCount() {
-        wordCountText.textContent = `Word Count: ${wordsList.length}`;
-    }
-
-    function updateHistoryWordCount() {
-        historyWordCountText.textContent = `History Word Count: ${historyWords.length}`;
-    }
-
-    function copyHistoryToClipboard() {
-        const historyText = historyWords.join('\n');
-        navigator.clipboard.writeText(historyText).then(() => {
-            alert('History copied to clipboard!');
-        });
-    }
-
-    function toggleDarkMode() {
-        darkMode = !darkMode;
-        document.body.classList.toggle('dark-mode', darkMode);
-    }
-});
+        historyWordsTextArea.value = history
