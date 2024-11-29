@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const searchButton = document.createElement('button');
             searchButton.textContent = '🔍';
             searchButton.addEventListener('click', () => {
-                window.open(`https://www.google.com/search?q=${word}`, '_blank');
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(word)}`, '_blank');
             });
             const deleteButton = document.createElement('button');
             deleteButton.textContent = '❌';
@@ -74,10 +74,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function saveToHistory(words) {
-        historyWords = historyWords.concat(words);
-        updateHistoryWords();
-        updateHistoryWordCount();
-    }
-
-    function updateHistoryWords() {
-        historyWordsTextArea.value = history
+        // Only save words that aren't deleted
