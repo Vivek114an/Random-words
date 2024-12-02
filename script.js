@@ -1,75 +1,107 @@
-let words = [];
-let history = [];
-
-function drawRandomWord() {
-    const inputBox = document.getElementById('wordInput');
-    words = inputBox.value.split('\n').map(word => word.trim()).filter(Boolean);
-    
-    if (words.length === 0) {
-        alert('Please enter words in the input box!');
-        return;
-    }
-
-    const randomIndex = Math.floor(Math.random() * words.length);
-    const drawnWord = words.splice(randomIndex, 1)[0];
-    
-    history.push(drawnWord);
-    updateWordInput();
-    addToHistoryBox(drawnWord);
-    updateWordCount();
-    updateHistoryCount();
+/* Basic styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: white;
 }
 
-function updateWordInput() {
-    document.getElementById('wordInput').value = words.join('\n');
+.container {
+    width: 90%;
+    max-width: 800px;
+    text-align: center;
 }
 
-function updateWordCount() {
-    document.getElementById('wordCount').innerText = `Words: ${words.length}`;
+textarea {
+    width: 80%;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 16px;
 }
 
-function updateHistoryCount() {
-    document.getElementById('historyCount').innerText = `History Words: ${history.length}`;
+.word-count {
+    font-size: 14px;
+    color: gray;
+    margin-top: -10px;
 }
 
-function addToHistoryBox(word) {
-    const historyBox = document.getElementById('historyBox');
-    const wordItem = document.createElement('div');
-    wordItem.className = 'word-item';
-    wordItem.innerHTML = `
-        <span>${word}</span>
-        <div>
-            <button onclick="searchWord('${word}')">🔍</button>
-            <button onclick="removeWord('${word}')">❌</button>
-        </div>
-    `;
-    historyBox.appendChild(wordItem);
+h2 {
+    font-size: 18px;
 }
 
-function searchWord(word) {
-    window.open(`https://www.google.com/search?q=${word} meaning`, '_blank');
+button {
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 5px;
 }
 
-function removeWord(word) {
-    history = history.filter(item => item !== word);
-    updateHistoryBox();
-    updateHistoryCount();
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
-function updateHistoryBox() {
-    const historyBox = document.getElementById('historyBox');
-    historyBox.innerHTML = '';
-    history.forEach(word => addToHistoryBox(word));
+.controls {
+    margin-top: 20px;
 }
 
-function toggleDarkLight() {
-    document.body.classList.toggle('dark-mode');
+input[type="checkbox"] {
+    margin-top: 10px;
 }
 
-function toggleFullScreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-    } else {
-        document.exitFullscreen();
-    }
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dull {
+    color: #aaa;
+}
+
+/* Light and Dark Themes */
+body.light-mode {
+    background-color: white;
+    color: black;
+}
+
+body.dark-mode {
+    background-color: #333;
+    color: white;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Full-screen styling */
+body.fullscreen {
+    height: 100vh;
+    overflow: hidden;
+}
+
+#inputWords,
+#drawnWordsList,
+#historyList {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
 }
