@@ -1,107 +1,81 @@
-/* Basic styling */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: white;
+let inputWords = document.getElementById('inputWords');
+let wordCount = document.getElementById('wordCount');
+let drawnWordsList = document.getElementById('drawnWordsList');
+let drawnCount = document.getElementById('drawnCount');
+let historyList = document.getElementById('historyList');
+let historyCount = document.getElementById('historyCount');
+let drawWordBtn = document.getElementById('drawWordBtn');
+let fullScreenBtn = document.getElementById('fullScreenBtn');
+let toggleThemeBtn = document.getElementById('toggleThemeBtn');
+
+let drawnWords = [];
+let historyWords = [];
+let wordList = [];
+
+function updateWordCount() {
+    wordList = inputWords.value.trim().split('\n').filter(word => word.trim() !== '');
+    wordCount.innerText = wordList.length;
 }
 
-.container {
-    width: 90%;
-    max-width: 800px;
-    text-align: center;
+function drawWord() {
+    if (wordList.length > 0) {
+        let randomIndex = Math.floor(Math.random() * wordList.length);
+        let word = wordList[randomIndex];
+        drawnWords.push(word);
+        wordList.splice(randomIndex, 1);
+        updateUI();
+    }
 }
 
-textarea {
-    width: 80%;
-    margin-bottom: 10px;
-    padding: 10px;
-    font-size: 16px;
+function updateUI() {
+    drawnWordsList.innerHTML = drawnWords.map(word => `
+        <li>
+            <span>${word}</span>
+            <button onclick="searchWord('${word}')">🔍</button>
+            <button onclick="removeWord('${word}')">❌</button>
+        </li>
+    `).join('');
+    
+    historyList.innerHTML = historyWords.map(word => `
+        <li class="dull">
+            <span>${word}</span>
+        </li>
+    `).join('');
+    
+    drawnCount.innerText = drawnWords.length;
+    historyCount.innerText = historyWords.length;
+    wordCount.innerText = wordList.length;
 }
 
-.word-count {
-    font-size: 14px;
-    color: gray;
-    margin-top: -10px;
+function searchWord(word) {
+    let searchUrl = `https://www.google.com/search?q=${word}+meaning`;
+    window.open(searchUrl, '_blank');
 }
 
-h2 {
-    font-size: 18px;
+function removeWord(word) {
+    drawnWords = drawnWords.filter(w => w !== word);
+    historyWords.push(word);
+    updateUI();
 }
 
-button {
-    padding: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    margin: 5px;
+function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+    document.body.classList.toggle('light-mode');
 }
 
-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
 }
 
-.controls {
-    margin-top: 20px;
-}
+// Event Listeners
+inputWords.addEventListener('input', updateWordCount);
+drawWordBtn.addEventListener('click', drawWord);
+toggleThemeBtn.addEventListener('click', toggleTheme);
+fullScreenBtn.addEventListener('click', toggleFullScreen);
 
-input[type="checkbox"] {
-    margin-top: 10px;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-li {
-    margin: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.dull {
-    color: #aaa;
-}
-
-/* Light and Dark Themes */
-body.light-mode {
-    background-color: white;
-    color: black;
-}
-
-body.dark-mode {
-    background-color: #333;
-    color: white;
-}
-
-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-/* Full-screen styling */
-body.fullscreen {
-    height: 100vh;
-    overflow: hidden;
-}
-
-#inputWords,
-#drawnWordsList,
-#historyList {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-}
+// Initial UI Setup
+updateWordCount();
