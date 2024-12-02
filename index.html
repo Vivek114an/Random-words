@@ -3,34 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word Selector</title>
+    <title>Word Drawer</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <textarea id="wordInput" placeholder="Paste your words here (one per line)"></textarea>
-        <button id="drawButton">Draw Words</button>
-        <p id="wordCount">Word Count: 0</p>
-
-        <div class="section">
-            <h3>Drawn Words</h3>
-            <ul id="drawnWords"></ul>
-            <p id="drawnWordCount">Drawn Word Count: 0</p>
+        <div class="header">
+            <button id="fullscreen" onclick="toggleFullScreen()">⛶ Full Screen</button>
+            <button id="toggleTheme" onclick="toggleDarkLight()">🌙</button>
         </div>
-
-        <div class="section">
+        <div class="word-section">
+            <div class="input-container">
+                <textarea id="wordInput" placeholder="Paste your words here..."></textarea>
+                <div id="wordCount" class="word-count">Words: 0</div>
+            </div>
+            <button onclick="drawRandomWord()">Draw Word</button>
+        </div>
+        <div class="history-section">
             <h3>History</h3>
-            <textarea id="historyWords" readonly></textarea>
-            <p id="historyWordCount">History Word Count: 0</p>
-            <button id="copyHistoryButton">Copy All to Clipboard</button>
+            <div id="historyBox" class="history-box"></div>
+            <div id="historyCount" class="word-count">History Words: 0</div>
         </div>
-    </div>
-
-    <button id="toggleModeButton" class="toggle-button">🌙</button>
-
-    <div id="popup" class="popup">
-        <span id="popupContent"></span>
-        <button id="closePopup">❌</button>
     </div>
 
     <script src="script.js"></script>
