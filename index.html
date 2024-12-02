@@ -8,21 +8,28 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <button id="fullscreen" onclick="toggleFullScreen()">⛶ Full Screen</button>
-            <button id="toggleTheme" onclick="toggleDarkLight()">🌙</button>
+        <div class="input-box">
+            <h2>Input Box</h2>
+            <textarea id="inputWords" placeholder="Paste your words here" rows="6"></textarea>
+            <p class="word-count">Word Count: <span id="wordCount">0</span></p>
         </div>
-        <div class="word-section">
-            <div class="input-container">
-                <textarea id="wordInput" placeholder="Paste your words here..."></textarea>
-                <div id="wordCount" class="word-count">Words: 0</div>
-            </div>
-            <button onclick="drawRandomWord()">Draw Word</button>
+
+        <div class="drawn-box">
+            <h2>Drawn Words</h2>
+            <ul id="drawnWordsList"></ul>
+            <p class="word-count">Drawn Word Count: <span id="drawnCount">0</span></p>
         </div>
-        <div class="history-section">
-            <h3>History</h3>
-            <div id="historyBox" class="history-box"></div>
-            <div id="historyCount" class="word-count">History Words: 0</div>
+
+        <div class="history-box">
+            <h2>History</h2>
+            <ul id="historyList"></ul>
+            <p class="word-count">History Word Count: <span id="historyCount">0</span></p>
+        </div>
+
+        <div class="controls">
+            <button id="drawWordBtn">Draw Word</button>
+            <button id="fullScreenBtn">Full Screen</button>
+            <button id="toggleThemeBtn">Toggle Dark/Light</button>
         </div>
     </div>
 
