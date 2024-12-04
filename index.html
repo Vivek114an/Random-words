@@ -1,296 +1,89 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Random Word Selector</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px;
-            transition: background-color 0.3s, color 0.3s;
-            position: relative;
-        }
-        .container {
-            width: 100%;
-            max-width: 500px;
-        }
-        textarea, .output-box, .history-box {
-            width: 100%;
-            padding: 10px;
-            font-size: 1em;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            resize: vertical;
-            margin-bottom: 10px;
-        }
-        .word-count {
-            text-align: right;
-            font-size: 0.9em;
-            color: #666;
-        }
-        .drawn-words, .history-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .output-box {
-            font-size: 1.5em;
-            font-weight: bold;
-            text-align: left;
-            min-height: 80px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 1em;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-            background-color: #007bff;
-            color: white;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .toggle-mode {
-            font-size: 0.9em;
-            cursor: pointer;
-            color: #007bff;
-        }
-        .drawn-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            margin: 5px 0;
-            padding: 5px;
-            border-bottom: 1px solid #ddd;
-        }
-        .delete-btn, .search-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1em;
-        }
-        .delete-btn {
-            color: red;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-        .search-btn {
-            color: blue;
-            margin-right: 3px; /* Make it closer to delete button */
-        }
-        /* Fullscreen Icon */
-        .fullscreen-icon {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 1.5em;
-            cursor: pointer;
-            z-index: 1000;
-            color: #007bff;
-        }
-        .fullscreen-icon:hover {
-            color: #0056b3;
-        }
-        /* Copy Button */
-        .copy-btn {
-            margin-top: 5px;
-            align-self: flex-start;
-            padding: 5px 10px;
-            font-size: 0.9em;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-            background-color: #28a745;
-            color: white;
-        }
-        .copy-btn:hover {
-            background-color: #218838;
-        }
-    </style>
+
+    <link rel="stylesheet" href="styles.css">
+
 </head>
+
 <body>
-    <div class="fullscreen-icon" id="fullscreenIcon" title="Enter Fullscreen">⛶</div>
+
     <div class="container">
+
         <!-- Main Words Input Box -->
+
         <div>
+
             <textarea id="mainWords" rows="10" placeholder="Paste words here, each on a new line"></textarea>
+
             <div class="word-count" id="mainWordCount">Words: 0</div>
+
         </div>
+
+
 
         <!-- Drawn Words Box -->
+
         <div class="drawn-words">
+
             <div class="options">
+
                 <label>Draw:</label>
+
                 <select id="drawCount" style="font-size: 1em;">
+
                     <option value="3">3 Words</option>
+
                     <option value="5">5 Words</option>
+
                 </select>
+
                 <button onclick="drawAndSave()">Draw Random Words</button>
+
             </div>
+
             <div class="output-box" id="drawnWords"></div>
+
         </div>
+
+
 
         <!-- History Box -->
+
         <div>
+
             <textarea id="historyWords" class="history-box" rows="20" readonly placeholder="History of drawn words"></textarea>
+
             <div class="word-count" id="historyWordCount">History Words: 0</div>
-            <!-- Copy button placed just below history box -->
-            <button class="copy-btn" onclick="copyHistory()">Copy</button>
+
         </div>
 
+
+
+        <!-- Copy History Button -->
+
+        <button id="copyHistoryBtn" class="copy-btn">Copy</button>
+
+
+
         <!-- Dark/Light Mode Toggle -->
+
         <div class="toggle-mode" onclick="toggleMode()">Toggle Dark/Light Mode</div>
+
     </div>
 
-    <script>
-        const mainWords = document.getElementById("mainWords");
-        const mainWordCount = document.getElementById("mainWordCount");
-        const drawnWords = document.getElementById("drawnWords");
-        const historyWords = document.getElementById("historyWords");
-        const historyWordCount = document.getElementById("historyWordCount");
-        const drawCount = document.getElementById("drawCount");
-        const fullscreenIcon = document.getElementById("fullscreenIcon");
-
-        let currentDrawnWords = [];
-
-        // Update word count
-        function updateWordCount() {
-            mainWordCount.textContent = "Words: " + mainWords.value.split("\n").filter(word => word.trim() !== "").length;
-            historyWordCount.textContent = "History Words: " + historyWords.value.split("\n").filter(word => word.trim() !== "").length;
-        }
-
-        // Draw random words
-        function drawRandomWords() {
-            let words = mainWords.value.split("\n").filter(word => word.trim() !== "");
-            const numWordsToDraw = Math.min(parseInt(drawCount.value), words.length);
-            
-            if (numWordsToDraw === 0) {
-                alert("No words available to draw.");
-                return;
-            }
-
-            drawnWords.innerHTML = "";
-            currentDrawnWords = [];
-            
-            for (let i = 0; i < numWordsToDraw; i++) {
-                const randomIndex = Math.floor(Math.random() * words.length);
-                const word = words.splice(randomIndex, 1)[0];
-                currentDrawnWords.push(word);
-
-                const wordDiv = document.createElement("div");
-                wordDiv.className = "drawn-item";
-                
-                const wordSpan = document.createElement("span");
-                wordSpan.textContent = word;
-                wordDiv.appendChild(wordSpan);
-
-                const searchBtn = document.createElement("button");
-                searchBtn.className = "search-btn";
-                searchBtn.textContent = "🔍";
-                searchBtn.onclick = () => searchWordMeaning(word);
-                wordDiv.appendChild(searchBtn);
-
-                const deleteBtn = document.createElement("button");
-                deleteBtn.className = "delete-btn";
-                deleteBtn.textContent = "X";
-                deleteBtn.onclick = () => deleteDrawnWord(word, wordDiv);
-                wordDiv.appendChild(deleteBtn);
-
-                drawnWords.appendChild(wordDiv);
-            }
-            
-            mainWords.value = words.join("\n");
-            updateWordCount();
-        }
-
-        // Delete drawn word from the Drawn Words box without adding to history
-        function deleteDrawnWord(word, wordDiv) {
-            drawnWords.removeChild(wordDiv);
-            currentDrawnWords = currentDrawnWords.filter(w => w !== word);
-        }
-
-        // Move remaining drawn words to history
-        function saveToHistory() {
-            if (currentDrawnWords.length > 0) {
-                historyWords.value += currentDrawnWords.join("\n") + "\n";
-                currentDrawnWords = [];
-                updateWordCount();
-            }
-        }
-
-        // Draw new words and save remaining to history
-        function drawAndSave() {
-            saveToHistory();
-            drawRandomWords();
-        }
-
-        // Search word meaning on Google
-        function searchWordMeaning(word) {
-            const query = encodeURIComponent(`${word} meaning`);
-            window.open(`https://www.google.com/search?q=${query}`, '_blank');
-        }
-
-        // Toggle dark/light mode
-        function toggleMode() {
-            document.body.classList.toggle("dark-mode");
-            document.body.style.backgroundColor = document.body.classList.contains("dark-mode") ? "#333" : "#f0f0f0";
-            document.body.style.color = document.body.classList.contains("dark-mode") ? "white" : "black";
-        }
-
-        // Fullscreen toggle functionality
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-                fullscreenIcon.textContent = "❌";
-                fullscreenIcon.title = "Exit Fullscreen";
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                    fullscreenIcon.textContent = "⛶";
-                    fullscreenIcon.title = "Enter Fullscreen";
-                }
-            }
-        }
-function copyHistory() {
-    const historyText = historyWords.value;
-    const textArea = document.createElement("textarea");
-    textArea.value = historyText;
-    textArea.style.position = "fixed"; // Prevents scrolling
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-
-    try {
-        const successful = document.execCommand("copy");
-        alert(successful ? "History copied to clipboard!" : "Failed to copy.");
-    } catch (err) {
-        alert("Fallback: Unable to copy: " + err);
-    }
-
-    document.body.removeChild(textArea);
-}
 
 
+    <script src="script.js"></script>
 
-        // Initialize word count and event listeners
-        mainWords.addEventListener("input", updateWordCount);
-        fullscreenIcon.addEventListener("click", toggleFullscreen);
-        updateWordCount();
-    </script>
 </body>
+
 </html>
